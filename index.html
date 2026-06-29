@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EarnClick — Gagnez de l'argent en ligne</title>
+<meta name="description" content="Gagnez de l'argent en ligne avec des plateformes vérifiées.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1D9E75;--green-dark:#0F6E56;--green-light:#E1F5EE;
+  --gold:#EF9F27;--blue:#378ADD;--red:#E24B4A;
+  --bg:#0a0f0d;--bg2:#111a15;--card:#1a2620;--card2:#1f2e28;
+  --border:#2a3d34;--border2:#3a5244;
+  --text:#e8f0eb;--text2:#9ab5a5;--text3:#5a7a6a;
+  --radius:10px
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700;cursor:pointer}
+.logo-icon{width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo span{color:var(--green)}
+.nav-links{display:flex;gap:4px}
+.nav-link{padding:7px 16px;border-radius:8px;border:none;background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:all .15s;font-family:inherit}
+.nav-link:hover{background:var(--card);color:var(--text)}
+.nav-link.active{background:rgba(29,158,117,.15);color:var(--green);font-weight:600}
+.nav-cta{padding:8px 18px;border-radius:8px;background:var(--green);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.nav-cta:hover{background:var(--green-dark)}
+.admin-icon{width:34px;height:34px;border-radius:8px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);transition:all .15s}
+.admin-icon:hover{border-color:var(--green);color:var(--green)}
+
+/* DB STATUS */
+.db-status{display:flex;align-items:center;gap:6px;font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border)}
+.db-dot{width:7px;height:7px;border-radius:50%;background:var(--text3)}
+.db-dot.connected{background:var(--green);box-shadow:0 0 6px rgba(29,158,117,.5)}
+.db-dot.error{background:var(--red)}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* HERO */
+.hero{padding:80px 32px 56px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:700px;height:350px;background:radial-gradient(ellipse,rgba(29,158,117,.12) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(29,158,117,.12);color:var(--green);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:20px;border:1px solid rgba(29,158,117,.3)}
+.hero h1{font-size:52px;font-weight:800;line-height:1.1;letter-spacing:-2px;margin-bottom:16px;color:#fff}
+.hero h1 span{color:var(--green)}
+.hero p{color:var(--text2);font-size:17px;max-width:520px;margin:0 auto 36px;line-height:1.6}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary{padding:14px 28px;border-radius:10px;background:var(--green);color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-primary:hover{background:var(--green-dark);transform:translateY(-1px)}
+.btn-outline{padding:14px 28px;border-radius:10px;background:transparent;color:var(--text);border:1px solid var(--border2);font-size:15px;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-outline:hover{background:var(--card);border-color:var(--green)}
+
+/* STATS */
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.stat-item{background:var(--bg2);padding:24px 20px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;color:var(--green)}
+.stat-label{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* SECTION */
+.section{padding:60px 32px}
+.section.alt{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.section-eyebrow{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;text-align:center}
+.section-title{font-size:32px;font-weight:700;color:#fff;letter-spacing:-.5px;margin-bottom:12px;text-align:center}
+.section-sub{color:var(--text2);font-size:15px;max-width:520px;margin:0 auto 40px;text-align:center;line-height:1.6}
+
+/* CARDS */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;max-width:1100px;margin:0 auto}
+.earn-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;transition:all .2s;position:relative;overflow:hidden}
+.earn-card:hover{border-color:var(--green);transform:translateY(-2px);background:var(--card2)}
+.earn-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:0;transition:opacity .2s}
+.earn-card:hover::after{opacity:1}
+.card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:10px}
+.badge-green{background:rgba(29,158,117,.15);color:var(--green);border:1px solid rgba(29,158,117,.3)}
+.badge-gold{background:rgba(239,159,39,.15);color:var(--gold);border:1px solid rgba(239,159,39,.3)}
+.badge-blue{background:rgba(55,138,221,.15);color:var(--blue);border:1px solid rgba(55,138,221,.3)}
+.earn-card h3{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px}
+.earn-card p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:18px}
+.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border)}
+.card-earn{font-size:13px;font-weight:600;color:var(--green)}
+.card-btn{padding:8px 16px;border-radius:8px;background:var(--green);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.card-btn:hover{background:var(--green-dark)}
+
+/* STEPS */
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;max-width:860px;margin:0 auto;position:relative}
+.steps-grid::before{content:'';position:absolute;top:36px;left:calc(16.6% + 24px);right:calc(16.6% + 24px);height:1px;background:var(--border2)}
+.step{text-align:center;padding:0 24px}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--green);color:#fff;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;position:relative;z-index:1}
+.step h3{font-size:15px;font-weight:600;color:#fff;margin-bottom:8px}
+.step p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* PLATFORMS */
+.platforms-wrap{max-width:960px;margin:0 auto;padding:48px 32px}
+.platforms-wrap h2{font-size:28px;font-weight:700;color:#fff;letter-spacing:-.5px;margin-bottom:8px}
+.platforms-wrap>p{color:var(--text2);font-size:14px;margin-bottom:36px;line-height:1.6}
+.cat-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.platform-cat{margin-bottom:32px}
+.platform-row{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:10px;transition:all .15s}
+.platform-row:hover{border-color:var(--green);background:var(--card2)}
+.plat-logo{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.plat-info{flex:1;min-width:0}
+.plat-name{font-size:15px;font-weight:600;color:#fff;margin-bottom:3px}
+.plat-desc{font-size:13px;color:var(--text2)}
+.plat-earn{font-size:13px;font-weight:600;color:var(--green);white-space:nowrap;padding:0 16px}
+.plat-btn{padding:9px 20px;border-radius:8px;background:var(--green);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;text-decoration:none;transition:background .15s;display:inline-block}
+.plat-btn:hover{background:var(--green-dark)}
+.tip-box{background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:18px 22px;display:flex;align-items:flex-start;gap:14px;margin-top:8px}
+
+/* CUSTOM LINKS */
+.custom-links-section{max-width:960px;margin:0 auto;padding:0 32px 48px}
+.custom-links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.custom-link-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .15s;display:flex;flex-direction:column;gap:10px}
+.custom-link-card:hover{border-color:var(--green);background:var(--card2)}
+.cl-title{font-size:15px;font-weight:600;color:#fff}
+.cl-desc{font-size:13px;color:var(--text2);line-height:1.5;flex:1}
+.cl-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
+.cl-btn{padding:7px 14px;border-radius:8px;background:var(--green);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block}
+.cl-btn:hover{background:var(--green-dark)}
+
+/* ABOUT */
+.about-wrap{max-width:680px;margin:0 auto;padding:56px 32px}
+.about-wrap h2{font-size:28px;font-weight:700;color:#fff;letter-spacing:-.5px;margin-bottom:16px}
+.about-wrap .lead{color:var(--text2);font-size:16px;line-height:1.7;margin-bottom:16px}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin:24px 0}
+.check-list li{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text2);line-height:1.5}
+.check-list li i{color:var(--green);font-size:18px;margin-top:1px;flex-shrink:0}
+.warning-box{background:var(--card);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 20px;margin-top:24px}
+.warning-box-title{font-size:13px;font-weight:600;color:var(--gold);margin-bottom:6px}
+.warning-box p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* LOADING */
+.loading-bar{display:flex;align-items:center;justify-content:center;gap:10px;padding:40px;color:var(--text3);font-size:13px}
+.spinner{width:18px;height:18px;border:2px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* MODAL AD */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;width:92%;max-width:460px;overflow:hidden}
+.modal-top{padding:16px 20px;border-bottom:1px solid var(--border)}
+.modal-platform{font-size:14px;font-weight:600;color:#fff}
+.modal-platform span{color:var(--green)}
+.modal-url{font-size:11px;color:var(--text3);font-family:monospace;word-break:break-all;margin-top:2px}
+.modal-ad-area{padding:36px 28px;text-align:center}
+.ad-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:14px}
+.ad-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px}
+.ad-box h3{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px}
+.ad-box p{font-size:13px;color:var(--text2);line-height:1.5}
+.modal-bar{padding:16px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.prog-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:var(--green);border-radius:3px;transition:width 1s linear}
+.modal-sec{font-size:13px;color:var(--text2);min-width:56px;text-align:right}
+.modal-go{padding:10px 20px;border-radius:8px;background:var(--green);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:none;white-space:nowrap}
+.modal-go.show{display:block}
+.modal-go:hover{background:var(--green-dark)}
+
+/* ADMIN LOGIN */
+.admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:300;align-items:center;justify-content:center}
+.admin-overlay.show{display:flex}
+.admin-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;width:92%;max-width:400px;padding:32px;position:relative}
+.admin-modal h2{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px}
+.admin-modal p{font-size:13px;color:var(--text3);margin-bottom:24px}
+.admin-close{position:absolute;top:16px;right:16px;width:28px;height:28px;background:var(--card);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3)}
+.admin-close:hover{border-color:var(--green);color:var(--green)}
+.field-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block}
+.field-input{width:100%;padding:11px 14px;border-radius:8px;background:var(--card);border:1px solid var(--border2);color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border .15s}
+.field-input:focus{border-color:var(--green)}
+.field-row{margin-bottom:16px}
+.admin-btn{width:100%;padding:12px;border-radius:8px;background:var(--green);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px}
+.admin-btn:hover{background:var(--green-dark)}
+.admin-err{font-size:13px;color:var(--red);margin-top:10px;display:none;text-align:center}
+.admin-err.show{display:block}
+
+/* ADMIN PANEL */
+.admin-panel{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;width:96%;max-width:620px;max-height:90vh;overflow-y:auto;position:relative}
+.admin-panel-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
+.admin-panel-header h2{font-size:17px;font-weight:700;color:#fff}
+.admin-panel-body{padding:24px}
+.ap-section{margin-bottom:28px}
+.ap-section-title{font-size:13px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
+.ap-field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.ap-field-row.full{grid-template-columns:1fr}
+.ap-input{width:100%;padding:10px 12px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:13px;font-family:inherit;outline:none}
+.ap-input:focus{border-color:var(--green)}
+.ap-select{width:100%;padding:10px 12px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:13px;font-family:inherit;outline:none;cursor:pointer}
+.ap-add-btn{width:100%;padding:11px;border-radius:8px;background:var(--green);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px}
+.ap-add-btn:hover{background:var(--green-dark)}
+.ap-add-btn:disabled{opacity:.5;cursor:not-allowed}
+.ap-msg{font-size:13px;text-align:center;padding:8px;display:none;border-radius:6px;margin-top:8px}
+.ap-msg.show{display:block}
+.ap-msg.success{color:var(--green);background:rgba(29,158,117,.1)}
+.ap-msg.error{color:var(--red);background:rgba(226,75,74,.1)}
+.ap-divider{height:1px;background:var(--border);margin:24px 0}
+.existing-links{display:flex;flex-direction:column;gap:8px}
+.existing-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.ei-info{flex:1;min-width:0}
+.ei-name{font-size:13px;font-weight:600;color:#fff;margin-bottom:2px}
+.ei-url{font-size:11px;color:var(--text3);font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ei-del{width:28px;height:28px;border-radius:6px;background:rgba(226,75,74,.1);border:1px solid rgba(226,75,74,.2);color:var(--red);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.ei-del:hover{background:rgba(226,75,74,.2)}
+.no-links{font-size:13px;color:var(--text3);text-align:center;padding:16px}
+
+/* SUPABASE CONFIG BANNER */
+.config-banner{background:rgba(239,159,39,.08);border:1px solid rgba(239,159,39,.3);border-radius:10px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px}
+.config-banner i{color:var(--gold);font-size:18px;flex-shrink:0;margin-top:1px}
+.config-banner-text{font-size:13px;color:var(--text2);line-height:1.6}
+.config-banner-text strong{color:var(--gold)}
+.config-banner code{font-family:monospace;background:var(--card);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--green)}
+
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:28px 32px;text-align:center}
+footer p{color:var(--text3);font-size:13px}
+footer a{color:var(--green);text-decoration:none}
+
+@media(max-width:640px){
+  nav{padding:0 16px}
+  .nav-links{display:none}
+  .hero{padding:48px 16px 36px}
+  .hero h1{font-size:32px}
+  .stats-strip{grid-template-columns:repeat(2,1fr)}
+  .section{padding:40px 16px}
+  .steps-grid{grid-template-columns:1fr;gap:24px}
+  .steps-grid::before{display:none}
+  .platforms-wrap,.custom-links-section{padding:32px 16px}
+  .platform-row{flex-wrap:wrap}
+  .plat-earn{display:none}
+  .about-wrap{padding:36px 16px}
+  .ap-field-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+  ⚙️  SUPABASE CONFIG — FANOVA AMIN'NY TOERANA 2 IRETO ETSY:
+  ============================================================
+  Dingana 1: Mankanesa amin'ny https://supabase.com → Projects → Settings → API
+  Dingana 2: Soloy ny roa etsy ambany (copy-paste fotsiny):
+  ============================================================ -->
+<script>
+  const SUPABASE_URL  = 'sb_publishable_sTQI6ImCX6Ta29BezjUpBA_bBCN2aoi';   // 
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwcmZ5bmV6cG95cm5kaHpza252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODY1NDgsImV4cCI6MjA5ODI2MjU0OH0.QvSHmG5BM-HRMjZ9ZzxL56ye1xpR1giEFqrxYE0I_2o';       // 👈 Soloina
+</script>
+
+<nav>
+  <div class="logo" onclick="showPage('home')">
+    <div class="logo-icon"><i class="ti ti-bolt" style="color:#fff;font-size:17px"></i></div>
+    Earn<span>Click</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('home')">Accueil</button>
+    <button class="nav-link" onclick="showPage('platforms')">Plateformes</button>
+    <button class="nav-link" onclick="showPage('about')">À propos</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="db-status" id="db-status">
+      <div class="db-dot" id="db-dot"></div>
+      <span id="db-label" style="color:var(--text3);font-size:11px">DB…</span>
+    </div>
+    <button class="nav-cta" onclick="showPage('platforms')">Commencer</button>
+    <div class="admin-icon" onclick="openAdminLogin()" title="Admin">
+      <i class="ti ti-settings" style="font-size:16px"></i>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-badge"><i class="ti ti-trending-up"></i>&nbsp; Revenus en ligne vérifiés</div>
+    <h1>Gagnez de l'argent<br><span>à chaque clic</span></h1>
+    <p>Accédez aux meilleures plateformes légitimes pour générer des revenus en ligne — raccourcisseurs de liens, offres, crypto et affiliation.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showPage('platforms')"><i class="ti ti-rocket"></i>&nbsp; Voir les plateformes</button>
+      <button class="btn-outline" onclick="showPage('about')">Comment ça marche</button>
+    </div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-item"><div class="stat-num" id="stat-count">6+</div><div class="stat-label">Plateformes vérifiées</div></div>
+    <div class="stat-item"><div class="stat-num">$20</div><div class="stat-label">CPM max / 1000 clics</div></div>
+    <div class="stat-item"><div class="stat-num">$1</div><div class="stat-label">Retrait minimum</div></div>
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Gratuit</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-eyebrow">Méthodes disponibles</div>
+    <div class="section-title">Plusieurs façons de gagner</div>
+    <div class="section-sub">Choisissez ce qui correspond à vos habitudes et commencez dès aujourd'hui.</div>
+    <div class="cards-grid">
+      <div class="earn-card">
+        <div class="card-icon" style="background:rgba(29,158,117,.15)"><i class="ti ti-link" style="color:var(--green);font-size:22px"></i></div>
+        <div class="badge badge-green">Payé par clic</div>
+        <h3>Raccourcisseurs de liens</h3>
+        <p>Raccourcissez n'importe quel lien, partagez-le. Gagnez à chaque visiteur qui clique.</p>
+        <div class="card-footer">
+          <span class="card-earn">Jusqu'à $20 / 1 000 clics</span>
+          <button class="card-btn" onclick="openAd('ShrinkEarn','https://shrinkearn.com/ref/Support','Raccourcissez vos liens et gagnez jusqu\'à $20 pour 1 000 visites. Paiement quotidien.')">Essayer</button>
+        </div>
+      </div>
+      <div class="earn-card">
+        <div class="card-icon" style="background:rgba(29,158,117,.15)"><i class="ti ti-device-gamepad-2" style="color:var(--green);font-size:22px"></i></div>
+        <div class="badge badge-green">Offres & tâches</div>
+        <h3>Offres & mini-tâches</h3>
+        <p>Testez des apps, jouez à des jeux, remplissez des offres et retirez instantanément.</p>
+        <div class="card-footer">
+          <span class="card-earn">Jusqu'à $50 par offre</span>
+          <button class="card-btn" onclick="openAd('Freecash','https://freecash.com/r/2RBIKP','Complétez des offres et testez des apps. Retirez dès $1 via PayPal ou crypto.')">Essayer</button>
+        </div>
+      </div>
+      <div class="earn-card">
+        <div class="card-icon" style="background:rgba(239,159,39,.15)"><i class="ti ti-currency-bitcoin" style="color:var(--gold);font-size:22px"></i></div>
+        <div class="badge badge-gold">Crypto gratuit</div>
+        <h3>Faucet crypto</h3>
+        <p>Réclamez des cryptomonnaies gratuitement chaque jour via des faucets et jeux.</p>
+        <div class="card-footer">
+          <span class="card-earn">Gains crypto quotidiens</span>
+          <button class="card-btn" onclick="openAd('GameFaucet','https://gamefaucet.fun/?r=12957','Réclamez des cryptos gratuitement. Parrainage à 50% sur les gains de vos filleuls.')">Essayer</button>
+        </div>
+      </div>
+      <div class="earn-card">
+        <div class="card-icon" style="background:rgba(239,159,39,.15)"><i class="ti ti-building-store" style="color:var(--gold);font-size:22px"></i></div>
+        <div class="badge badge-gold">Affiliation</div>
+        <h3>Admitad — E-commerce & marques</h3>
+        <p>Promouvez +2 400 marques mondiales et gagnez des commissions sur chaque vente.</p>
+        <div class="card-footer">
+          <span class="card-earn">Jusqu'à 50% / vente</span>
+          <button class="card-btn" onclick="openAd('Admitad','https://plrvq.com/g/gp8po8i1u74248b23b5445d8e108c6/','Rejoignez Admitad et promouvez +2 400 marques. Commissions jusqu\'à 50%. Paiements hebdomadaires.')">Essayer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section alt">
+    <div class="section-eyebrow">Simple & rapide</div>
+    <div class="section-title">3 étapes pour commencer</div>
+    <div class="section-sub">Aucune compétence technique requise. Commencez en moins de 5 minutes.</div>
+    <div class="steps-grid">
+      <div class="step"><div class="step-num">1</div><h3>Choisissez une plateforme</h3><p>Sélectionnez parmi nos plateformes vérifiées celle qui correspond à vos habitudes.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>Inscrivez-vous gratuitement</h3><p>Créez votre compte en quelques secondes. Aucun investissement requis.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>Retirez vos gains</h3><p>Atteignez le minimum et retirez via PayPal, USDT ou d'autres méthodes.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLATFORMS -->
+<div class="page" id="page-platforms">
+  <div class="platforms-wrap">
+    <div class="section-eyebrow" style="text-align:left;margin-bottom:10px">Nos partenaires</div>
+    <h2>Plateformes vérifiées</h2>
+    <p>Toutes les plateformes listées sont légitimes et paient réellement. Inscrivez-vous sur plusieurs à la fois pour maximiser vos revenus.</p>
+
+    <div class="platform-cat">
+      <div class="cat-label">Raccourcisseurs de liens — payé par clic</div>
+      <div class="platform-row">
+        <div class="plat-logo" style="background:rgba(29,158,117,.15)"><i class="ti ti-scissors" style="color:var(--green)"></i></div>
+        <div class="plat-info"><div class="plat-name">ShrinkEarn</div><div class="plat-desc">Raccourcissez vos liens et gagnez à chaque visite. Paiement quotidien en PayPal ou USDT. Commission référence 20%.</div></div>
+        <div class="plat-earn">Jusqu'à $20 / 1k</div>
+        <a class="plat-btn" href="https://shrinkearn.com/ref/Support" target="_blank" rel="noopener">Rejoindre</a>
+      </div>
+      <div class="platform-row">
+        <div class="plat-logo" style="background:rgba(55,138,221,.15)"><i class="ti ti-cut" style="color:var(--blue)"></i></div>
+        <div class="plat-info"><div class="plat-name">Clk.sh</div><div class="plat-desc">URL shortener haute rémunération avec paiements journaliers. Supporte PayPal, USDT, Payeer.</div></div>
+        <div class="plat-earn">Jusqu'à $20 / 1k</div>
+        <a class="plat-btn" href="https://clk.sh/ref/Joyson" target="_blank" rel="noopener">Rejoindre</a>
+      </div>
+      <div class="platform-row">
+        <div class="plat-logo" style="background:rgba(239,159,39,.15)"><i class="ti ti-lock" style="color:var(--gold)"></i></div>
+        <div class="plat-info"><div class="plat-name">Linkvertise</div><div class="plat-desc">Monétisez vos contenus premium. L'utilisateur effectue une action avant d'accéder au lien.</div></div>
+        <div class="plat-earn">Jusqu'à $10 / 1k</div>
+        <a class="plat-btn" href="https://linkvertise.com" target="_blank" rel="noopener">Rejoindre</a>
+      </div>
+    </div>
+
+    <div class="platform-cat">
+      <div class="cat-label">Offres & tâches rémunérées</div>
+      <div class="platform-row">
+        <div class="plat-logo" style="background:rgba(29,158,117,.15)"><i class="ti ti-cash" style="color:var(--green)"></i></div>
+        <div class="plat-info"><div class="plat-name">Freecash</div><div class="plat-desc">Testez des apps, jouez, complétez des offres. Retrait dès $1 via PayPal, crypto ou cartes cadeaux.</div></div>
+        <div class="plat-earn">Jusqu'à $50 / offre</div>
+        <a class="plat-btn" href="https://freecash.com/r/2RBIKP" target="_blank" rel="noopener">Rejoindre</a>
+      </div>
+    </div>
+
+    <div class="platform-cat">
+      <div class="cat-label">Affiliation & e-commerce</div>
+      <div class="platform-row">
+        <div class="plat-logo" style="background:rgba(239,159,39,.15)"><i class="ti ti-building-store" style="color:var(--gold)"></i></div>
+        <div class="plat-info"><div class="plat-name">Admitad — Réseau d'affiliation</div><div class="plat-desc">+2 400 annonceurs mondiaux : e-commerce, finance, jeux, SaaS. Commissions jusqu'à 50%. Paiements hebdomadaires.</div></div>
+        <div class="plat-earn">Jusqu'à 50% / vente</div>
+        <a class="plat-btn" href="https://plrvq.com/g/gp8po8i1u74248b23b5445d8e108c6/" target="_blank" rel="noopener">Rejoindre</a>
+      </div>
+    </div>
+
+    <div class="platform-cat">
+      <div class="cat-label">Crypto faucet & parrainage</div>
+      <div class="platform-row">
+        <div class="plat-logo" style="background:rgba(239,159,39,.15)"><i class="ti ti-currency-bitcoin" style="color:var(--gold)"></i></div>
+        <div class="plat-info"><div class="plat-name">GameFaucet</div><div class="plat-desc">Réclamez des cryptos gratuitement chaque jour. Parrainage à 50% sur tous les gains de vos filleuls.</div></div>
+        <div class="plat-earn">Crypto quotidien</div>
+        <a class="plat-btn" href="https://gamefaucet.fun/?r=12957" target="_blank" rel="noopener">Rejoindre</a>
+      </div>
+      <div class="platform-row">
+        <div class="plat-logo" style="background:rgba(55,138,221,.15)"><i class="ti ti-gift" style="color:var(--blue)"></i></div>
+        <div class="plat-info"><div class="plat-name">Partenaire bonus</div><div class="plat-desc">Plateforme supplémentaire avec programme de parrainage. Revenus passifs sur vos recommandations.</div></div>
+        <div class="plat-earn">Commission parrainage</div>
+        <a class="plat-btn" href="https://tpi.li/KCH7" target="_blank" rel="noopener">Rejoindre</a>
+      </div>
+    </div>
+
+    <!-- CUSTOM LINKS FROM SUPABASE -->
+    <div id="custom-platforms-section">
+      <div class="loading-bar" id="db-loading">
+        <div class="spinner"></div> Chargement des liens partenaires…
+      </div>
+    </div>
+
+    <div class="tip-box" style="margin-top:16px">
+      <i class="ti ti-bulb" style="color:var(--green);font-size:20px;flex-shrink:0;margin-top:1px"></i>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:4px">Conseil pour maximiser vos gains</div>
+        <div style="font-size:13px;color:var(--text2)">Inscrivez-vous sur toutes les plateformes simultanément. Combinez raccourcisseur + offres Freecash + faucet crypto = revenus multipliés chaque jour.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="custom-links-section" id="custom-links-section" style="display:none">
+    <div style="font-size:13px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">Liens partenaires supplémentaires</div>
+    <div class="custom-links-grid" id="custom-links-grid"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="page" id="page-about">
+  <div class="about-wrap">
+    <div class="section-eyebrow" style="text-align:left;margin-bottom:10px">À propos</div>
+    <h2>Une plateforme honnête pour gagner en ligne</h2>
+    <p class="lead">EarnClick est un annuaire de plateformes vérifiées qui vous permet de générer des revenus supplémentaires en ligne, sans aucun investissement initial.</p>
+    <p class="lead" style="font-size:14px">Notre mission : vous guider vers les meilleures opportunités légitimes disponibles, tout en vous protégeant des arnaques sur internet.</p>
+    <ul class="check-list">
+      <li><i class="ti ti-circle-check"></i><span>Toutes nos plateformes sont testées et vérifiées avant d'être listées.</span></li>
+      <li><i class="ti ti-circle-check"></i><span>Aucun investissement requis — 100% gratuit pour commencer.</span></li>
+      <li><i class="ti ti-circle-check"></i><span>Plusieurs méthodes : clics, offres, crypto faucet, affiliation.</span></li>
+      <li><i class="ti ti-circle-check"></i><span>Retraits via PayPal, USDT, et autres méthodes selon la plateforme.</span></li>
+      <li><i class="ti ti-circle-check"></i><span>Accessible depuis Madagascar et la majorité des pays africains.</span></li>
+    </ul>
+    <div class="warning-box">
+      <div class="warning-box-title"><i class="ti ti-alert-triangle"></i>&nbsp; Avertissement</div>
+      <p>EarnClick est un site de référencement et d'affiliation. Les revenus dépendent de votre activité. Nous ne garantissons aucun montant fixe. Lisez toujours les conditions des plateformes avant de vous inscrire.</p>
+    </div>
+    <button class="btn-primary" style="margin-top:28px" onclick="showPage('platforms')">Voir les plateformes &nbsp;<i class="ti ti-arrow-right"></i></button>
+  </div>
+</div>
+
+<footer>
+  <p>© 2024 EarnClick &nbsp;·&nbsp; <a href="#" onclick="showPage('about');return false">À propos</a> &nbsp;·&nbsp; <a href="#" onclick="showPage('platforms');return false">Plateformes</a></p>
+</footer>
+
+<!-- AD MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-platform">Redirection vers <span id="m-name"></span></div>
+      <div class="modal-url" id="m-url"></div>
+    </div>
+    <div class="modal-ad-area">
+      <div class="ad-tag">Publicité sponsorisée</div>
+      <div class="ad-box"><h3 id="m-title"></h3><p id="m-desc"></p></div>
+    </div>
+    <div class="modal-bar">
+      <div class="prog-track"><div class="prog-fill" id="m-prog" style="width:100%"></div></div>
+      <div class="modal-sec" id="m-sec">5 sec</div>
+      <button class="modal-go" id="m-go">Continuer &nbsp;<i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div class="admin-overlay" id="admin-login-overlay">
+  <div class="admin-modal">
+    <div class="admin-close" onclick="closeAdminLogin()"><i class="ti ti-x" style="font-size:14px"></i></div>
+    <h2><i class="ti ti-lock" style="color:var(--green)"></i>&nbsp; Espace Admin</h2>
+    <p>Accès réservé à l'administrateur du site.</p>
+    <div class="field-row">
+      <label class="field-label">Mot de passe</label>
+      <input class="field-input" type="password" id="admin-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkAdminPw()">
+    </div>
+    <button class="admin-btn" onclick="checkAdminPw()">Accéder au panneau admin</button>
+    <div class="admin-err" id="admin-err">Mot de passe incorrect. Réessayez.</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-overlay" id="admin-panel-overlay">
+  <div class="admin-panel">
+    <div class="admin-panel-header">
+      <h2><i class="ti ti-settings" style="color:var(--green)"></i>&nbsp; Panneau Admin — EarnClick</h2>
+      <div class="admin-close" onclick="closeAdminPanel()"><i class="ti ti-x" style="font-size:14px"></i></div>
+    </div>
+    <div class="admin-panel-body">
+
+      <!-- Config check -->
+      <div class="config-banner" id="config-warning" style="display:none">
+        <i class="ti ti-alert-triangle"></i>
+        <div class="config-banner-text">
+          <strong>Supabase non configuré.</strong><br>
+          Ouvrez le fichier HTML dans un éditeur et remplacez :<br>
+          <code>REPLACE_WITH_YOUR_SUPABASE_URL</code> et <code>REPLACE_WITH_YOUR_ANON_KEY</code><br>
+          par vos vraies clés (Settings → API dans Supabase).
+        </div>
+      </div>
+
+      <div class="ap-section">
+        <div class="ap-section-title"><i class="ti ti-plus"></i>&nbsp; Ajouter un nouveau lien</div>
+        <div class="ap-field-row">
+          <div>
+            <div class="field-label">Nom de la plateforme *</div>
+            <input class="ap-input" type="text" id="ap-name" placeholder="Ex: ClickBank, Binance...">
+          </div>
+          <div>
+            <div class="field-label">Type</div>
+            <select class="ap-select" id="ap-type">
+              <option value="Affiliation">Affiliation</option>
+              <option value="URL Shortener">URL Shortener</option>
+              <option value="Offres & tâches">Offres & tâches</option>
+              <option value="Crypto faucet">Crypto faucet</option>
+              <option value="Parrainage">Parrainage</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+        </div>
+        <div class="ap-field-row full">
+          <div>
+            <div class="field-label">Lien referral / affiliation *</div>
+            <input class="ap-input" type="url" id="ap-url" placeholder="https://...">
+          </div>
+        </div>
+        <div class="ap-field-row full">
+          <div>
+            <div class="field-label">Description courte</div>
+            <input class="ap-input" type="text" id="ap-desc" placeholder="Ex: Gagnez des commissions sur chaque vente...">
+          </div>
+        </div>
+        <div class="ap-field-row">
+          <div>
+            <div class="field-label">Commission / gains</div>
+            <input class="ap-input" type="text" id="ap-earn" placeholder="Ex: Jusqu'à 50% / vente">
+          </div>
+          <div style="display:flex;align-items:flex-end">
+            <button class="ap-add-btn" id="ap-add-btn" onclick="addCustomLink()">
+              <i class="ti ti-plus"></i>&nbsp; Ajouter au site
+            </button>
+          </div>
+        </div>
+        <div class="ap-msg" id="ap-msg"></div>
+      </div>
+
+      <div class="ap-divider"></div>
+
+      <div class="ap-section">
+        <div class="ap-section-title"><i class="ti ti-list"></i>&nbsp; Liens enregistrés (<span id="ap-count">0</span>)</div>
+        <div class="existing-links" id="existing-links">
+          <div class="loading-bar"><div class="spinner"></div> Chargement…</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ====================================================
+   SUPABASE HELPER — pas besoin de modifier ici
+   ==================================================== */
+const DB_CONFIGURED =
+  SUPABASE_URL  !== 'REPLACE_WITH_YOUR_SUPABASE_URL' &&
+  SUPABASE_ANON !== 'REPLACE_WITH_YOUR_ANON_KEY';
+
+const SB = {
+  async req(method, path, body) {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+      method,
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Content-Type': 'application/json',
+        'Prefer': method === 'POST' ? 'return=representation' : ''
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const txt = await res.text();
+    return txt ? JSON.parse(txt) : [];
+  },
+  async getLinks()        { return this.req('GET',    'earn_links?order=created_at.asc') },
+  async insertLink(data)  { return this.req('POST',   'earn_links', data) },
+  async deleteLink(id)    { return this.req('DELETE', 'earn_links?id=eq.' + id) }
+};
+
+/* ====================================================
+   PAGE NAVIGATION
+   ==================================================== */
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const map = { home:0, platforms:1, about:2 };
+  if (map[name] !== undefined) document.querySelectorAll('.nav-link')[map[name]].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ====================================================
+   AD MODAL
+   ==================================================== */
+let adTarget = '', adTimer = null;
+
+function openAd(name, url, desc) {
+  adTarget = url;
+  document.getElementById('m-name').textContent = name;
+  document.getElementById('m-url').textContent = url.replace('https://','');
+  document.getElementById('m-title').textContent = 'Rejoignez ' + name + ' maintenant';
+  document.getElementById('m-desc').textContent = desc;
+  document.getElementById('m-prog').style.width = '100%';
+  document.getElementById('m-sec').textContent = '5 sec';
+  document.getElementById('m-go').classList.remove('show');
+  document.getElementById('overlay').classList.add('show');
+  let s = 5;
+  if (adTimer) clearInterval(adTimer);
+  adTimer = setInterval(() => {
+    s--;
+    document.getElementById('m-prog').style.width = Math.round(s/5*100) + '%';
+    document.getElementById('m-sec').textContent = s > 0 ? s + ' sec' : 'Prêt !';
+    if (s <= 0) { clearInterval(adTimer); document.getElementById('m-go').classList.add('show'); }
+  }, 1000);
+}
+document.getElementById('m-go').onclick = () => {
+  document.getElementById('overlay').classList.remove('show');
+  window.open(adTarget, '_blank');
+};
+document.getElementById('overlay').onclick = function(e) {
+  if (e.target === this) { this.classList.remove('show'); if (adTimer) clearInterval(adTimer); }
+};
+
+/* ====================================================
+   ADMIN
+   ==================================================== */
+const ADMIN_PW = '19883003';
+
+function openAdminLogin() {
+  document.getElementById('admin-pw').value = '';
+  document.getElementById('admin-err').classList.remove('show');
+  document.getElementById('admin-login-overlay').classList.add('show');
+  setTimeout(() => document.getElementById('admin-pw').focus(), 100);
+}
+function closeAdminLogin() { document.getElementById('admin-login-overlay').classList.remove('show'); }
+function checkAdminPw() {
+  if (document.getElementById('admin-pw').value === ADMIN_PW) {
+    closeAdminLogin();
+    openAdminPanel();
+  } else {
+    document.getElementById('admin-err').classList.add('show');
+    document.getElementById('admin-pw').value = '';
+    document.getElementById('admin-pw').focus();
+  }
+}
+document.getElementById('admin-login-overlay').onclick = e => { if (e.target === e.currentTarget) closeAdminLogin(); };
+document.getElementById('admin-panel-overlay').onclick = e => { if (e.target === e.currentTarget) closeAdminPanel(); };
+
+async function openAdminPanel() {
+  document.getElementById('admin-panel-overlay').classList.add('show');
+  if (!DB_CONFIGURED) {
+    document.getElementById('config-warning').style.display = 'flex';
+  }
+  await loadExistingLinks();
+}
+function closeAdminPanel() { document.getElementById('admin-panel-overlay').classList.remove('show'); }
+
+/* ====================================================
+   SUPABASE CRUD
+   ==================================================== */
+let customLinks = [];
+
+async function loadLinks() {
+  if (!DB_CONFIGURED) { customLinks = []; return; }
+  try {
+    customLinks = await SB.getLinks();
+    setDbStatus(true);
+  } catch(e) {
+    setDbStatus(false);
+    customLinks = [];
+  }
+}
+
+function setDbStatus(ok) {
+  document.getElementById('db-dot').className = 'db-dot ' + (ok ? 'connected' : 'error');
+  document.getElementById('db-label').textContent = ok ? 'DB OK' : 'DB hors ligne';
+  document.getElementById('db-label').style.color = ok ? 'var(--green)' : 'var(--red)';
+}
+
+async function addCustomLink() {
+  const name  = document.getElementById('ap-name').value.trim();
+  const url   = document.getElementById('ap-url').value.trim();
+  const desc  = document.getElementById('ap-desc').value.trim();
+  const earn  = document.getElementById('ap-earn').value.trim();
+  const type  = document.getElementById('ap-type').value;
+
+  document.getElementById('ap-name').style.borderColor = !name ? 'var(--red)' : '';
+  document.getElementById('ap-url').style.borderColor  = !url  ? 'var(--red)' : '';
+  if (!name || !url) return;
+
+  const btn = document.getElementById('ap-add-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enregistrement…';
+
+  try {
+    if (!DB_CONFIGURED) throw new Error('Supabase non configuré');
+    await SB.insertLink({
+      name, url, type,
+      description: desc || 'Nouvelle plateforme partenaire.',
+      earn: earn || 'Variable'
+    });
+    showMsg('success', '✓ Lien ajouté et enregistré dans la base de données !');
+    document.getElementById('ap-name').value = '';
+    document.getElementById('ap-url').value  = '';
+    document.getElementById('ap-desc').value = '';
+    document.getElementById('ap-earn').value = '';
+    document.getElementById('ap-name').style.borderColor = '';
+    document.getElementById('ap-url').style.borderColor  = '';
+    await loadLinks();
+    renderExistingLinks();
+    renderCustomLinksOnSite();
+  } catch(e) {
+    showMsg('error', '✗ Erreur : ' + (e.message.includes('not configured') || !DB_CONFIGURED
+      ? 'Configurez les clés Supabase dans le fichier HTML.'
+      : 'Vérifiez que la table "earn_links" existe dans Supabase.'));
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-plus"></i>&nbsp; Ajouter au site';
+  }
+}
+
+function showMsg(type, text) {
+  const el = document.getElementById('ap-msg');
+  el.textContent = text;
+  el.className = 'ap-msg show ' + type;
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+async function deleteCustomLink(id) {
+  if (!confirm('Supprimer ce lien ?')) return;
+  try {
+    await SB.deleteLink(id);
+    await loadLinks();
+    renderExistingLinks();
+    renderCustomLinksOnSite();
+  } catch(e) {
+    alert('Erreur lors de la suppression.');
+  }
+}
+
+async function loadExistingLinks() {
+  document.getElementById('existing-links').innerHTML =
+    '<div class="loading-bar"><div class="spinner"></div> Chargement…</div>';
+  await loadLinks();
+  renderExistingLinks();
+}
+
+const typeColors = {
+  'Affiliation':'badge-gold','URL Shortener':'badge-green',
+  'Offres & tâches':'badge-green','Crypto faucet':'badge-gold',
+  'Parrainage':'badge-blue','Autre':'badge-blue'
+};
+
+function renderExistingLinks() {
+  const el = document.getElementById('existing-links');
+  document.getElementById('ap-count').textContent = customLinks.length;
+  if (!DB_CONFIGURED) {
+    el.innerHTML = '<div class="no-links">⚙️ Configurez Supabase pour voir les liens.</div>';
+    return;
+  }
+  if (!customLinks.length) {
+    el.innerHTML = '<div class="no-links">Aucun lien ajouté pour l\'instant.</div>';
+    return;
+  }
+  el.innerHTML = customLinks.map(l =>
+    `<div class="existing-item">
+      <div class="ei-info">
+        <div class="ei-name">${l.name} <span style="font-size:11px;color:var(--text3);font-weight:400">[${l.type}]</span></div>
+        <div class="ei-url">${l.url}</div>
+      </div>
+      <div class="ei-del" onclick="deleteCustomLink(${l.id})"><i class="ti ti-trash" style="font-size:14px"></i></div>
+    </div>`
+  ).join('');
+}
+
+function renderCustomLinksOnSite() {
+  const sec    = document.getElementById('custom-platforms-section');
+  const clSec  = document.getElementById('custom-links-section');
+  const clGrid = document.getElementById('custom-links-grid');
+
+  if (!customLinks.length) {
+    sec.innerHTML = '';
+    clSec.style.display = 'none';
+    updateStatCount();
+    return;
+  }
+
+  sec.innerHTML = `<div class="platform-cat">
+    <div class="cat-label">Liens partenaires ajoutés</div>
+    ${customLinks.map(l => `
+    <div class="platform-row">
+      <div class="plat-logo" style="background:rgba(29,158,117,.1)"><i class="ti ti-link" style="color:var(--green)"></i></div>
+      <div class="plat-info"><div class="plat-name">${l.name}</div><div class="plat-desc">${l.description}</div></div>
+      <div class="plat-earn">${l.earn}</div>
+      <a class="plat-btn" href="${l.url}" target="_blank" rel="noopener">Rejoindre</a>
+    </div>`).join('')}
+  </div>`;
+
+  clSec.style.display = 'block';
+  clGrid.innerHTML = customLinks.map(l => {
+    const bc = typeColors[l.type] || 'badge-blue';
+    return `<div class="custom-link-card">
+      <div class="badge ${bc}" style="align-self:flex-start">${l.type}</div>
+      <div class="cl-title">${l.name}</div>
+      <div class="cl-desc">${l.description}</div>
+      <div class="cl-footer">
+        <span style="font-size:13px;font-weight:600;color:var(--green)">${l.earn}</span>
+        <a class="cl-btn" href="${l.url}" target="_blank" rel="noopener">Rejoindre</a>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateStatCount();
+}
+
+function updateStatCount() {
+  document.getElementById('stat-count').textContent = (6 + customLinks.length) + '+';
+}
+
+/* ====================================================
+   INIT — chargement automatique au démarrage
+   ==================================================== */
+(async function init() {
+  if (!DB_CONFIGURED) {
+    setDbStatus(false);
+    document.getElementById('db-loading').innerHTML =
+      '<span style="color:var(--text3);font-size:13px">⚙️ Base de données non configurée — voir le fichier HTML</span>';
+    return;
+  }
+  try {
+    await loadLinks();
+    renderCustomLinksOnSite();
+    document.getElementById('db-loading').remove();
+  } catch(e) {
+    document.getElementById('db-loading').innerHTML =
+      '<span style="color:var(--red);font-size:13px">✗ Impossible de joindre Supabase</span>';
+  }
+})();
+</script>
+</body>
+</html>
